@@ -12,11 +12,16 @@ import java.io.IOException;
 @WebServlet("/auth")
 public class AuthServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String email = req.getParameter("user_email");
         String password = req.getParameter("user_password");
         String message = DbManager.auth(email, password);
-        req.setAttribute("massage", message);
-        req.getRequestDispatcher(".jsp").forward(req, resp);
+
+        if (message.equals("success")){
+            resp.sendRedirect("profile.jsp");
+        }else {
+            req.setAttribute("errorMessage", "Invalid email or password");
+            req.getRequestDispatcher("auth.jsp").forward(req, resp);
+        }
     }
 }
